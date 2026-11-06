@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block body %}
+<h1>{{ 'Sửa nhân viên' if e else 'Thêm nhân viên' }}</h1><p class="sub">Điền thông tin nhân viên</p>
+<div class="card" style="max-width:720px"><form method="post">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+ <div class="grid">
+  <label>Username<input name="username" required value="{{ e.username if e else '' }}"></label>
+  <label>Mật khẩu {{ '(bỏ trống nếu không đổi)' if e else '(≥ 8 ký tự)' }}<input type="password" name="password" {{ '' if e else 'required' }} autocomplete="new-password"></label>
+  <label>Họ tên<input name="full_name" required value="{{ e.full_name if e else '' }}"></label>
+  <label>Ngày sinh<input type="date" name="date_of_birth" value="{{ e.date_of_birth if e and e.date_of_birth else '' }}"></label>
+  <label>Số điện thoại<input name="phone" value="{{ e.phone if e and e.phone else '' }}"></label>
+  <label>Email<input type="email" name="email" value="{{ e.email if e and e.email else '' }}"></label>
+  <label>Lương (VNĐ)<input type="number" name="salary" min="0" value="{{ e.salary|int if e else 0 }}"></label>
+  <label>Vai trò<select name="role">
+   <option value="employee" {{ 'selected' if e and e.role=='employee' }}>employee</option>
+   <option value="admin" {{ 'selected' if e and e.role=='admin' }}>admin</option></select></label>
+ </div>
+ <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="is_active" style="width:auto;margin:0" {{ 'checked' if (not e) or e.is_active }}> Đang hoạt động</label>
+ <button>Lưu</button> <a class="btn ghost" href="{{ url_for('employees') }}">Hủy</a>
+</form></div>{% endblock %}

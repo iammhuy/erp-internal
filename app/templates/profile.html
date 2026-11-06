@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block body %}
+<h1>Hồ sơ của tôi</h1><p class="sub">Thông tin cá nhân trong hệ thống nội bộ</p>
+<div class="card">
+ <div class="hero"><div class="av">{{ e.full_name[0]|upper }}</div>
+  <div><h2 style="margin:0">{{ e.full_name }}</h2>
+   <span class="badge {{ 'b-admin' if e.role=='admin' else 'b-emp' }}">{{ e.role }}</span>
+   <span class="badge b-on">@{{ e.username }}</span></div></div>
+ <div class="info">
+  <div><small>Ngày sinh</small><b>{{ e.date_of_birth|d }}</b></div>
+  <div><small>Số điện thoại</small><b>{{ e.phone or '—' }}</b></div>
+  <div><small>Email</small><b>{{ e.email or '—' }}</b></div>
+  <div><small>Lương</small><b>{{ e.salary|vnd }}</b></div>
+ </div>
+ <p style="margin:22px 0 0"><a class="btn" href="{{ url_for('feedback') }}">Xem danh sách feedback khách hàng →</a></p>
+</div>{% endblock %}

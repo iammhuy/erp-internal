@@ -1,0 +1,18 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}ERP Công ty ABC{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body>
+<div class="layout">
+<aside class="side">
+ <div class="brand"><i>A</i> ERP ABC</div>
+ <a class="nav {{ 'on' if page=='profile' }}" href="{{ url_for('profile') }}">👤 Hồ sơ của tôi</a>
+ <a class="nav {{ 'on' if page=='feedback' }}" href="{{ url_for('feedback') }}">💬 Feedback khách hàng</a>
+ {% if session.role == 'admin' %}<a class="nav {{ 'on' if page=='employees' }}" href="{{ url_for('employees') }}">👥 Quản lý nhân viên</a>{% endif %}
+ <div class="who"><b>{{ session.name }}</b><span>{{ session.username }} · {{ session.role }}</span>
+  <form method="post" action="{{ url_for('logout') }}" style="margin-top:10px">
+   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="ghost sm">Đăng xuất</button></form></div>
+</aside>
+<main class="main">
+{% with msgs = get_flashed_messages(with_categories=true) %}{% for c, m in msgs %}<div class="flash {{ c }}">{{ m }}</div>{% endfor %}{% endwith %}
+{% block body %}{% endblock %}
+</main></div></body></html>

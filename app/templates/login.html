@@ -1,0 +1,12 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Đăng nhập · ERP ABC</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body>
+<div class="loginbox"><div class="card">
+ <h1>ERP Công ty ABC</h1><p class="sub">Đăng nhập hệ thống nội bộ</p>
+ {% with msgs = get_flashed_messages(with_categories=true) %}{% for c, m in msgs %}<div class="flash {{ c }}">{{ m }}</div>{% endfor %}{% endwith %}
+ <form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Tên đăng nhập<input name="username" required autofocus autocomplete="username"></label>
+  <label>Mật khẩu<input type="password" name="password" required autocomplete="current-password"></label>
+  <button style="width:100%;padding:12px">Đăng nhập</button>
+ </form></div></div></body></html>

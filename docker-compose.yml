@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - ${PGDATA_DIR:-/srv/erp/pgdata}:/var/lib/postgresql/data   # dữ liệu nằm trên ổ Ubuntu, xóa container vẫn còn
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      retries: 10
+    # không publish cổng 5432: chỉ web/sync trong mạng Docker mới thấy DB
+
+  web:
+    build: ./app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+    command: sh -c "python init_db.py && gunicorn -w 3 -b 0.0.0.0:8000 app:app"
+    depends_on:
+      db: { condition: service_healthy }
+
+  sync:                       # chỉ chạy khi bật profile: docker compose --profile sync up -d
+    build: ./app
+    profiles: ["sync"]
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+    command: python sync_feedback.py
+    depends_on: [web]
+
+  nginx:
+    image: nginx:1.26-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx/erp.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on: [web]
+

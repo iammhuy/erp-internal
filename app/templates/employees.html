@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block body %}
+<h1>Quản lý nhân viên</h1><p class="sub">Thêm, sửa, khóa hoặc xóa tài khoản nhân viên</p>
+<div class="tools"><form method="get"><input name="q" value="{{ kw }}" placeholder="Tìm theo tên, username, email…"><button>Tìm</button></form>
+ <a class="btn" href="{{ url_for('employee_new') }}">+ Thêm nhân viên</a></div>
+<div class="card tw"><table>
+ <tr><th>Họ tên</th><th>Username</th><th>Ngày sinh</th><th>SĐT</th><th>Email</th><th>Lương</th><th>Vai trò</th><th>Trạng thái</th><th></th></tr>
+ {% for e in rows %}<tr>
+  <td><b>{{ e.full_name }}</b></td><td>{{ e.username }}</td><td>{{ e.date_of_birth|d }}</td><td>{{ e.phone or '' }}</td><td>{{ e.email or '' }}</td>
+  <td>{{ e.salary|vnd }}</td><td><span class="badge {{ 'b-admin' if e.role=='admin' else 'b-emp' }}">{{ e.role }}</span></td>
+  <td><span class="badge {{ 'b-on' if e.is_active else 'b-off' }}">{{ 'Hoạt động' if e.is_active else 'Đã khóa' }}</span></td>
+  <td style="white-space:nowrap"><a class="btn ghost sm" href="{{ url_for('employee_edit', eid=e.id) }}">Sửa</a>
+   {% if e.id != session.uid %}<form method="post" action="{{ url_for('employee_delete', eid=e.id) }}" style="display:inline" onsubmit="return confirm('Xóa nhân viên {{ e.full_name }}?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="danger sm">Xóa</button></form>{% endif %}</td></tr>
+ {% else %}<tr><td colspan="9" class="empty">Không có nhân viên</td></tr>{% endfor %}
+</table></div>{% endblock %}

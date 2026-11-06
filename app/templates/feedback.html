@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block body %}
+<h1>Feedback khách hàng</h1><p class="sub">{{ total }} phản hồi · dữ liệu đồng bộ từ AWS</p>
+<div class="tools"><form method="get"><input name="q" value="{{ kw }}" placeholder="Tìm theo tên, SĐT, email, nội dung…"><button>Tìm</button>
+ {% if kw %}<a class="btn ghost" href="{{ url_for('feedback') }}">Xóa lọc</a>{% endif %}</form></div>
+<div class="card tw"><table>
+ <tr><th>Thời gian</th><th>Họ tên</th><th>SĐT</th><th>Email</th><th>Nội dung</th></tr>
+ {% for r in rows %}<tr><td>{{ r.created_at_aws|dt }}</td><td><b>{{ r.full_name }}</b></td><td>{{ r.phone or '' }}</td><td>{{ r.email or '' }}</td><td class="msg">{{ r.message }}</td></tr>
+ {% else %}<tr><td colspan="5" class="empty">Chưa có phản hồi nào</td></tr>{% endfor %}
+</table></div>
+<div class="pager"><span>Trang {{ page_no }}</span><span>
+ {% if page_no > 1 %}<a class="btn ghost sm" href="?page={{ page_no-1 }}&q={{ kw }}">« Trước</a>{% endif %}
+ {% if has_next %}<a class="btn ghost sm" href="?page={{ page_no+1 }}&q={{ kw }}">Sau »</a>{% endif %}</span></div>
+{% endblock %}

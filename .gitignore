@@ -1,0 +1,6 @@
+.env
+*.key
+*.crt
+*.sql
+__pycache__/
+pgdata/
